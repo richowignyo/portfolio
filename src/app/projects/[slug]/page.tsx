@@ -87,6 +87,23 @@ export default async function ProjectCaseStudy({ params }: PageProps) {
                 <span key={tech}>{tech}</span>
               ))}
             </div>
+            <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium text-[#64748B]">
+              {project.techStack.map((tech) => (
+                <span key={tech}>{tech}</span>
+              ))}
+            </div>
+
+            {"dataDisclaimer" in project && project.dataDisclaimer ? (
+              <div className="mt-8 rounded-2xl border border-[#BFDBFE] bg-[#EFF6FF] p-5 sm:p-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#2563EB]">
+                  Data Disclaimer
+                </p>
+
+                <p className="mt-3 text-sm leading-7 text-[#475569]">
+                  {project.dataDisclaimer}
+                </p>
+              </div>
+            ) : null}
           </div>
         </div>
       </section>
