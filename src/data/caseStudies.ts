@@ -12,6 +12,8 @@ export const caseStudies = {
       "Time Series Forecasting",
       "Business Intelligence",
     ],
+    dataDisclaimer:
+      "Data yang digunakan dalam project ini merupakan data dummy/simulasi yang dibuat untuk keperluan portfolio. Data aktual/internal PT BFI Finance Indonesia Tbk tidak dipublikasikan.",
     visualizations: {
       title: "Key Visualizations",
       items: [
