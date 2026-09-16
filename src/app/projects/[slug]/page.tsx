@@ -95,10 +95,7 @@ export default async function ProjectCaseStudy({ params }: PageProps) {
                 </p>
 
                 <p className="mt-3 text-sm leading-7 text-[#475569]">
-                  Data yang digunakan dalam project ini merupakan data
-                  dummy/simulasi yang dibuat untuk keperluan portfolio. Data
-                  aktual/internal PT BFI Finance Indonesia Tbk tidak
-                  dipublikasikan.
+                  The data used in this project consists of dummy/simulated data created for portfolio purposes. Actual/internal data from PT BFI Finance Indonesia Tbk is not publicly available.
                 </p>
               </div>
             ) : null}
