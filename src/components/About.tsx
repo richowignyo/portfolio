@@ -65,7 +65,7 @@ export default function About() {
 
             {/* Photo Carousel */}
             <div className="mt-8 max-w-sm">
-              <div className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-[#E2E8F0] bg-[#F8FAFC] shadow-sm">
+              <div className="group relative aspect-4/3 overflow-hidden rounded-2xl border border-[#E2E8F0] bg-[#F8FAFC] shadow-sm">
                 <img
                   src={aboutImages[currentImage].src}
                   alt={aboutImages[currentImage].alt}
@@ -113,7 +113,7 @@ export default function About() {
           </div>
 
           {/* Right */}
-          <div className="space-y-5 text-lg leading-8 text-[#64748B]">
+          <div className="space-y-5 text-lg leading-8 text-[#64748B] text-justify">
             <p>
               I’m a Data Science graduate from Universitas Airlangga with a
               strong interest in Data Analytics and Business Intelligence.

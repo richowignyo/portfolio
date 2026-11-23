@@ -1,4 +1,3 @@
-import { ArrowUpRight } from "lucide-react";
 
 const organizations = [
   {
@@ -43,7 +42,7 @@ export default function OrganizationalExperience() {
         </div>
 
         {/* Organizations */}
-        <div className="divide-y divide-[#E2E8F0] border-y border-[#E2E8F0]">
+        <div className="divide-y divide-[#E2E8F0] border-y border-[#E2E8F0] text-justify">
           {organizations.map((item) => (
             <article
               key={`${item.organization}-${item.role}`}
@@ -87,8 +86,41 @@ export default function OrganizationalExperience() {
             Selected Leadership
           </p>
 
-          <div className="mt-6 border-y border-[#E2E8F0]">
+          <div className="mt-6 border-y border-[#E2E8F0] text-justify">
+            {/* FTMM Solar Rays */}
             <article className="grid gap-6 py-8 transition-all duration-300 hover:px-3 lg:grid-cols-[1.1fr_2fr_0.7fr] lg:items-start">
+              <div>
+                <h3 className="text-xl font-bold text-[#0B1F3A]">
+                  FTMM Solar Rays 2023
+                </h3>
+
+                <p className="mt-2 text-sm font-medium text-[#0F766E]">
+                  Event Chairperson
+                </p>
+              </div>
+
+              <div>
+                <p className="max-w-2xl text-base leading-7 text-[#64748B]">
+                  Led the organizing committee of FTMM Solar Rays 2023,
+                  coordinating committee members, overseeing event
+                  preparations, and supporting the successful execution
+                  of the program.
+                </p>
+              </div>
+
+              <div className="lg:text-right">
+                <p className="text-sm font-medium text-[#0B1F3A]">
+                  Sep 2023
+                </p>
+
+                <p className="mt-1 text-sm text-[#64748B]">
+                  Surabaya
+                </p>
+              </div>
+            </article>
+
+            {/* Airnology */}
+            <article className="grid gap-6 border-t border-[#E2E8F0] py-8 transition-all duration-300 hover:px-3 lg:grid-cols-[1.1fr_2fr_0.7fr] lg:items-start">
               <div>
                 <h3 className="text-xl font-bold text-[#0B1F3A]">
                   Airnology 2023
@@ -108,7 +140,9 @@ export default function OrganizationalExperience() {
               </div>
 
               <div className="lg:text-right">
-                <p className="text-sm font-medium text-[#0B1F3A]">2023</p>
+                <p className="text-sm font-medium text-[#0B1F3A]">
+                  2023
+                </p>
 
                 <p className="mt-1 text-sm text-[#64748B]">
                   Surabaya

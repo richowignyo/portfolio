@@ -44,7 +44,7 @@ export default function Skills() {
             Skills & Tools
           </h2>
 
-          <p className="mt-6 text-base leading-7 text-[#64748B] sm:text-lg">
+          <p className="mt-6 text-base leading-7 text-[#64748B] sm:text-lg text-justify">
             A practical toolkit built through academic projects, professional
             experience, and hands-on data analysis work.
           </p>

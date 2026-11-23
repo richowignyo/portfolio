@@ -1,27 +1,54 @@
+
 import { ArrowUpRight, Award, BadgeCheck } from "lucide-react";
 
-const certifications = [
+export type AdditionalLearningRecord = {
+  id: string;
+  title: string;
+  provider: string;
+  category: string;
+  learning_status: "in_progress" | "completed";
+  description: string | null;
+  skills: string[];
+  issue_date: string | null;
+  expiration_date: string | null;
+  credential_id: string | null;
+  credential_url: string | null;
+  certificate_path: string | null;
+  certificateUrl: string | null;
+};
+
+type CertificationItem = {
+  id?: string;
+  title: string;
+  issuer: string;
+  date: string;
+  type: string;
+  certificate: string | null;
+  credentialId: string | null;
+};
+
+const certifications: CertificationItem[] = [
   {
     title: "Data Analyst",
     issuer: "DQLab — Digital Talent Academy",
     date: "Aug 2026",
-    type: "Training",
-    certificate: null,
+    type: "Course",
+    certificate: "/certifications/fundamental-of-data-analyst.jpg",
     credentialId: null,
   },
   {
     title: "Artificial Intelligence",
     issuer: "AWS — Digital Talent Academy",
     date: "Aug 2026",
-    type: "Training",
-    certificate: null,
+    type: "Course",
+    certificate: "/certifications/ai.jpg",
     credentialId: null,
   },
   {
     title: "Associate Data Scientist + Python",
     issuer: "Digital Talent Academy",
     date: "Sep 2026",
-    type: "Certification",
+    type: "Course",
     certificate: "/certifications/associate-data-scientist-python.jpg",
     credentialId: "21211993840-9809",
   },
@@ -29,7 +56,7 @@ const certifications = [
     title: "Data Scientist Supervisor",
     issuer: "Digital Talent Academy",
     date: "Sep 2026",
-    type: "Certification",
+    type: "Course",
     certificate: "/certifications/data-scientist-supervisor.jpg",
     credentialId: "21211994840-2492",
   },
@@ -37,7 +64,7 @@ const certifications = [
     title: "SQL (Basic)",
     issuer: "HackerRank",
     date: "Aug 2026",
-    type: "Certification",
+    type: "Course",
     certificate: "/certifications/sql-basic.jpg",
     credentialId: "3565ED7FD226",
   },
@@ -53,19 +80,67 @@ const certifications = [
     title: "Pengenalan Data Science dan Pemanfaatannya di Berbagai Sektor",
     issuer: "Digital Talent Scholarship",
     date: "Aug 2026",
-    type: "Certification",
+    type: "Course",
     certificate: "/certifications/data-science-micro-skill.jpg",
     credentialId: null,
   },
 ];
 
-export default function Certifications() {
+function formatLearningDate(date: string | null) {
+  if (!date) return "Date not specified";
+
+  const parsedDate = new Date(`${date}T00:00:00`);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return "Date not specified";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    year: "numeric",
+  }).format(parsedDate);
+}
+
+function formatCategory(category: string) {
+  const labels: Record<string, string> = {
+    certification: "Certification",
+    training: "Training",
+    course: "Course",
+    workshop: "Workshop",
+    bootcamp: "Bootcamp",
+    other: "Other",
+  };
+
+  return labels[category] ?? "Learning";
+}
+
+export default function Certifications({
+  additionalLearningRecords = [],
+}: {
+  additionalLearningRecords?: AdditionalLearningRecord[];
+}) {
+  const additionalCertifications: CertificationItem[] =
+    additionalLearningRecords.map((record) => ({
+      id: record.id,
+      title: record.title,
+      issuer: record.provider,
+      date: formatLearningDate(record.issue_date),
+      type: formatCategory(record.category),
+      certificate: record.certificateUrl,
+      credentialId: record.credential_id,
+    }));
+
+  const allCertifications = [
+    ...certifications,
+    ...additionalCertifications,
+  ];
+
   return (
     <section
       id="certifications"
       className="border-t border-[#E2E8F0] bg-white py-24"
     >
-      <div className="mx-auto max-w-6xl px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
         {/* Section Header */}
         <div className="mb-12">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-[#2563EB]">
@@ -84,12 +159,13 @@ export default function Certifications() {
 
         {/* Certifications */}
         <div className="grid gap-5 md:grid-cols-2">
-          {certifications.map((certification) => {
-            const isCertification = certification.type === "Certification";
+          {allCertifications.map((certification) => {
+            const isCertification =
+              certification.type === "Certification";
 
             return (
               <article
-                key={certification.title}
+                key={certification.id ?? certification.title}
                 className="group flex flex-col rounded-2xl border border-[#E2E8F0] bg-[#F8FAFC] p-6 transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-md lg:p-7"
               >
                 {/* Type + Date */}
@@ -147,7 +223,7 @@ export default function Certifications() {
                     ) : (
                       <div>
                         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#94A3B8]">
-                          Credential
+                          Credential ID
                         </p>
 
                         <p className="mt-1 text-xs font-medium text-[#475569]">
@@ -166,7 +242,7 @@ export default function Certifications() {
                     </p>
 
                     <p className="mt-1 text-xs font-medium text-[#475569]">
-                      Training
+                      {certification.type}
                     </p>
                   </div>
                 )}

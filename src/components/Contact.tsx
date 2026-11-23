@@ -1,3 +1,4 @@
+
 import { ArrowUpRight, Mail } from "lucide-react";
 
 type Contact = {
@@ -69,10 +70,10 @@ export default function Contact() {
                       ? "noopener noreferrer"
                       : undefined
                   }
-                  className="group flex items-center justify-between rounded-2xl border border-[#E2E8F0] bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[#CBD5E1] hover:shadow-md"
+                  className="group flex items-center justify-between rounded-2xl border border-[#E2E8F0] bg-white p-5 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-[#CBD5E1] hover:bg-[#FCFDFF] hover:shadow-md active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563EB] focus-visible:ring-offset-2 motion-reduce:transform-none motion-reduce:transition-none"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#2563EB]">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#2563EB] transition-colors duration-300 group-hover:bg-[#DBEAFE]">
                       {contact.image ? (
                         <img
                           src={contact.image}
@@ -97,7 +98,7 @@ export default function Contact() {
 
                   <ArrowUpRight
                     size={18}
-                    className="text-[#94A3B8] transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-[#2563EB]"
+                    className="text-[#94A3B8] transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-[#2563EB] motion-reduce:transform-none"
                   />
                 </a>
               );

@@ -1,3 +1,4 @@
+
 @import "tailwindcss";
 
 :root {
@@ -23,4 +24,90 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ========================================
+   HERO ANIMATIONS
+======================================== */
+
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-enter {
+  opacity: 0;
+  animation: hero-fade-up 650ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero-enter-delay-0 {
+  animation-delay: 0ms;
+}
+
+.hero-enter-delay-100 {
+  animation-delay: 100ms;
+}
+
+.hero-enter-delay-200 {
+  animation-delay: 200ms;
+}
+
+.hero-enter-delay-300 {
+  animation-delay: 300ms;
+}
+
+.hero-enter-delay-400 {
+  animation-delay: 400ms;
+}
+
+.hero-enter-delay-500 {
+  animation-delay: 500ms;
+}
+
+/* Accessibility: respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .hero-enter {
+    opacity: 1;
+    animation: none;
+    transform: none;
+  }
+}
+
+
+
+/* ========================================
+   SECTION SCROLL REVEAL
+======================================== */
+
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 650ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Accessibility: respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    transition-delay: 0ms;
+    will-change: auto;
+  }
 }

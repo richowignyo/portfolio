@@ -1,7 +1,10 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { projects } from "@/data/projects";
+
+import { projects as staticProjects } from "@/data/projects";
+import { createClient } from "@/lib/supabase/server";
 
 const projectThumbnails: Record<string, string> = {
   "bfi-finance-business-intelligence": "/projects/thumbnail-bfi.png",
@@ -14,7 +17,108 @@ const projectThumbnails: Record<string, string> = {
   "evachub-disaster-information-system": "/projects/thumbnail-evachub.png",
 };
 
-export default function Projects() {
+type ProjectCardData = {
+  slug: string;
+  number: string;
+  category: string;
+  title: string;
+  description: string;
+  techStack: string[];
+  thumbnail: string | null;
+};
+
+type DynamicProject = {
+  id: string;
+  slug: string;
+  title: string;
+  category: string | null;
+  short_description: string | null;
+  tech_stack: string[] | null;
+  thumbnail_path: string | null;
+  display_order: number | null;
+};
+
+async function getDynamicProjects(): Promise<ProjectCardData[]> {
+  try {
+    const supabase = await createClient();
+
+    const { data, error } = await supabase
+      .from("projects")
+      .select(
+        `
+          id,
+          slug,
+          title,
+          category,
+          short_description,
+          tech_stack,
+          thumbnail_path,
+          display_order
+        `
+      )
+      .eq("status", "published")
+      .order("display_order", { ascending: true })
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Failed to fetch published projects:", error.message);
+      return [];
+    }
+
+    const dynamicProjects = (data ?? []) as DynamicProject[];
+
+    return dynamicProjects.map((project, index) => {
+      let thumbnail: string | null = null;
+
+      if (project.thumbnail_path) {
+        if (project.thumbnail_path.startsWith("http")) {
+          thumbnail = project.thumbnail_path;
+        } else {
+          thumbnail = supabase.storage
+            .from("portfolio-media")
+            .getPublicUrl(project.thumbnail_path).data.publicUrl;
+        }
+      }
+
+      return {
+        slug: project.slug,
+        number: String(index + 1).padStart(2, "0"),
+        category: project.category || "Project",
+        title: project.title,
+        description: project.short_description || "",
+        techStack: project.tech_stack ?? [],
+        thumbnail,
+      };
+    });
+  } catch (error) {
+    console.error("Unexpected error fetching projects:", error);
+    return [];
+  }
+}
+
+export default async function Projects() {
+  const dynamicProjects = await getDynamicProjects();
+
+  // Hindari menampilkan project dua kali apabila slug-nya sama.
+  const dynamicSlugs = new Set(
+    dynamicProjects.map((project) => project.slug)
+  );
+
+  const legacyProjects: ProjectCardData[] = staticProjects
+    .filter((project) => !dynamicSlugs.has(project.slug))
+    .map((project) => ({
+      slug: project.slug,
+      number: project.number,
+      category: project.category,
+      title: project.title,
+      description: project.description,
+      techStack: project.techStack,
+      thumbnail: projectThumbnails[project.slug] ?? null,
+    }));
+
+  // Project lama tetap ada, project CMS ditambahkan setelahnya.
+  const allProjects = [...legacyProjects, ...dynamicProjects];
+
   return (
     <section id="projects" className="bg-white">
       <div className="mx-auto max-w-7xl px-6 py-24 lg:px-8">
@@ -37,8 +141,8 @@ export default function Projects() {
 
         {/* Project Grid */}
         <div className="grid gap-6 md:grid-cols-2">
-          {projects.map((project) => (
-            <ProjectCard key={project.number} project={project} />
+          {allProjects.map((project) => (
+            <ProjectCard key={project.slug} project={project} />
           ))}
         </div>
       </div>
@@ -49,17 +153,8 @@ export default function Projects() {
 function ProjectCard({
   project,
 }: {
-  project: {
-    slug: string;
-    number: string;
-    category: string;
-    title: string;
-    description: string;
-    techStack: string[];
-  };
+  project: ProjectCardData;
 }) {
-  const thumbnail = projectThumbnails[project.slug];
-
   return (
     <article className="group flex min-h-85 flex-col rounded-2xl border border-[#E2E8F0] bg-[#F8FAFC] p-7 transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-md lg:p-8">
       {/* Top */}
@@ -75,16 +170,24 @@ function ProjectCard({
       </div>
 
       {/* Thumbnail */}
-      {thumbnail && (
+      {project.thumbnail && (
         <div className="mt-6 overflow-hidden rounded-xl border border-[#E2E8F0] bg-white">
           <div className="relative h-36 w-full sm:h-40">
-            <Image
-              src={thumbnail}
-              alt={`${project.title} project thumbnail`}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-              sizes="(max-width: 768px) 100vw, 50vw"
-            />
+            {project.thumbnail.startsWith("http") ? (
+              <img
+                src={project.thumbnail}
+                alt={`${project.title} project thumbnail`}
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+              />
+            ) : (
+              <Image
+                src={project.thumbnail}
+                alt={`${project.title} project thumbnail`}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+            )}
           </div>
         </div>
       )}
@@ -99,21 +202,23 @@ function ProjectCard({
           {project.title}
         </h3>
 
-        <p className="mt-5 max-w-xl text-base leading-7 text-[#64748B]">
+        <p className="mt-5 max-w-xl text-base leading-7 text-[#64748B] text-justify">
           {project.description}
         </p>
 
         {/* Tech Stack */}
-        <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2">
-          {project.techStack.map((tech) => (
-            <span
-              key={tech}
-              className="text-xs font-medium text-[#64748B]"
-            >
-              {tech}
-            </span>
-          ))}
-        </div>
+        {project.techStack.length > 0 && (
+          <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2">
+            {project.techStack.map((tech) => (
+              <span
+                key={tech}
+                className="text-xs font-medium text-[#64748B]"
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Bottom */}
